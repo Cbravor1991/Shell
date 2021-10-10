@@ -14,6 +14,7 @@
 #include <signal.h>
 #include <sys/wait.h>
 #include <sys/types.h>
+extern int status;
 
 #ifndef SHELL_NO_COLORS
 // color scape strings

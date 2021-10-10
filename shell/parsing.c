@@ -101,7 +101,23 @@ parse_environ_var(struct execcmd *c, char *arg)
 static char *
 expand_environ_var(char *arg)
 {
-	// Your code here
+	if (arg[0] == '$') {
+		if (arg[1] == '?') {
+			sprintf(arg, "%d", status);
+			return arg;
+		}
+
+		char *var = getenv(arg + 1);
+
+		if (var == NULL) {
+			arg[0] = '\0';
+		} else {
+			if (strlen(var) > strlen(arg)) {
+				realloc(arg, strlen(var) * sizeof(char));
+			}
+			strcpy(arg, var);
+		}
+	}
 
 	return arg;
 }
@@ -186,10 +202,17 @@ parse_line(char *buf)
 {
 	struct cmd *r, *l;
 
+
 	char *right = split_line(buf, '|');
+	// en vez de parsear la derecha como comando la parseo como linea
+	if (block_contains(right, '|') > 0) {
+		r = parse_line(right);
+	} else {
+		r = parse_cmd(right);
+	}
 
 	l = parse_cmd(buf);
-	r = parse_cmd(right);
+
 
 	return pipe_cmd_create(l, r);
 }

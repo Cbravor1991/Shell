@@ -7,6 +7,9 @@
 int
 exit_shell(char *cmd)
 {
+	if (strcmp(cmd, "exit") == 0) {
+		return 1;
+	}
 	// Your code here
 
 	return 0;
@@ -27,7 +30,40 @@ exit_shell(char *cmd)
 int
 cd(char *cmd)
 {
-	// Your code here
+	if (strncmp(cmd, "cd", 2) == 0) {
+		if (strlen(cmd) == 2) {
+			status = 0;
+
+
+			if (chdir(getenv("HOME")) < 0) {
+				status = 1;
+				perror("chdir");
+			}
+
+			char *resultado;
+
+			resultado = getcwd(NULL, 0);
+
+			snprintf(promt, sizeof promt, "%s", resultado);
+
+
+			return 1;
+		}
+		int chdir_1 = chdir(cmd + 3);
+		status = 0;
+		if (chdir_1 < 0) {
+			status = 1;
+			perror("chdir");
+		}
+
+		char *resultado;
+
+		resultado = getcwd(NULL, 0);
+
+		snprintf(promt, sizeof promt, "%s", resultado);
+		return 1;
+	}
+
 
 	return 0;
 }
@@ -40,6 +76,16 @@ cd(char *cmd)
 int
 pwd(char *cmd)
 {
+	if (strcmp(cmd, "pwd") == 0) {
+		char *resultado;
+		// char buffer
+		resultado = getcwd(NULL, 0);
+
+		printf("%s\n", resultado);
+		status = 0;
+		free(resultado);
+		return 1;
+	}
 	// Your code here
 
 	return 0;
